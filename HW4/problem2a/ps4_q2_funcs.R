@@ -69,7 +69,11 @@ evaluate = function(mat,beta){
   }
   
   FWER = FP/(TP+TN+FP+FN)
-  FDR = FP/(TP+FP)
+  if((TP+FP)==0){
+    FDR=0
+  }else{
+    FDR = FP/(TP+FP)
+  }
   Sens = TP/(TP+FN)
   Spec = TN/(TN+FP)
   

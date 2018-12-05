@@ -14,7 +14,8 @@ n = 1000 # Number of Observations per Monte Carlo simulation
 p = 100
 beta = c(rep(0.1,10),rep(0,90))
 sigma = 1
-mc_rep = 100
+mc_rep = 10000
+core = 32L
 
 # parameter list where mclapply would operate on
 rho = list(-0.75,-0.5,-0.25,0,0.25,0.5,0.75)
@@ -29,7 +30,7 @@ simulation = function(rho,sigma,mc_rep){
 }
 
 # The list storing the uncorrected p-value matrix of each simulation
-p_val = mclapply(rho,simulation,sigma=1,mc_rep=mc_rep,mc.cores = 32L)
+p_val = mclapply(rho,simulation,sigma=1,mc_rep=mc_rep,mc.cores = core)
 
 # And to obtain the final estimation for each amount of interest, we 
 # do parallel computing also on different p-value adjust method
@@ -57,7 +58,7 @@ estimation = function(method,mat,beta){
 results_q4a = NULL
 
 for (i in 1:length(p_val)){
-  M = mclapply(multi_method,estimation,mat=p_val[[i]],beta=beta,mc.cores = 32L)
+  M = mclapply(multi_method,estimation,mat=p_val[[i]],beta=beta,mc.cores = core)
   results_q4a[[i]] = M
 }
 
