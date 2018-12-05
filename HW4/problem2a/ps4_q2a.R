@@ -6,7 +6,8 @@
 ## errors are calculated for the four amounts of our interest.
 
 source("ps4_q2_funcs.R")
-require(parallel)
+library(parallel)
+library(mnormt)
 
 # Basic parameters to be used:
 n = 1000 # Number of Observations per Monte Carlo simulation
@@ -28,11 +29,11 @@ simulation = function(rho,sigma,mc_rep){
 }
 
 # The list storing the uncorrected p-value matrix of each simulation
-p_val = mclapply(rho,simulation,sigma=1,mc_rep=10000,mc.cores = 4L)
+p_val = mclapply(rho,simulation,sigma=1,mc_rep=100,mc.cores = 1)
 
 # And to obtain the final estimation for each amount of interest, we 
 # do parallel computing also on different p-value adjust method
-multi_method = list("bonferroni","Holm","BH","BY")
+multi_method = list("bonferroni","holm","BH","BY")
 
 estimation = function(method,mat,beta){
   # We first do p-value adjustment for the p-value matrix
@@ -55,12 +56,11 @@ estimation = function(method,mat,beta){
 # The list storing the final result in a list format
 results_q4a = NULL
 
-for (i in 1:length(P)){
-  M = mclapply(multi_method,estimation,mat=P[[i]],beta=beta,mc.cores = 4L)
+for (i in 1:length(p_val)){
+  M = mclapply(multi_method,estimation,mat=p_val[[i]],beta=beta,mc.cores = 1)
   results_q4a[[i]] = M
 }
 
 save(results_q4a,file = "PS4_q2a.RData")
-
 
 
