@@ -29,7 +29,7 @@ simulation = function(rho,sigma,mc_rep){
 }
 
 # The list storing the uncorrected p-value matrix of each simulation
-p_val = mclapply(rho,simulation,sigma=1,mc_rep=100,mc.cores = 1)
+p_val = mclapply(rho,simulation,sigma=1,mc_rep=mc_rep,mc.cores = 32L)
 
 # And to obtain the final estimation for each amount of interest, we 
 # do parallel computing also on different p-value adjust method
@@ -57,7 +57,7 @@ estimation = function(method,mat,beta){
 results_q4a = NULL
 
 for (i in 1:length(p_val)){
-  M = mclapply(multi_method,estimation,mat=p_val[[i]],beta=beta,mc.cores = 1)
+  M = mclapply(multi_method,estimation,mat=p_val[[i]],beta=beta,mc.cores = 32L)
   results_q4a[[i]] = M
 }
 
