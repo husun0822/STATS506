@@ -9,7 +9,7 @@
 #PBS -l nodes=1:ppn=2
 #PBS -l walltime=00:15:00
 
-#PBS -o /home/husun/stats506/HW/HW4
+#PBS -o /home/husun/stats506/HW4/problem2b
 #PBS -V
 
 #PBS -m abe
@@ -22,3 +22,6 @@
 #PBS -j oe
 
 #PBS -V
+
+##code to be run
+R CMD BATCH --vanilla /home/husun/STATS506/HW4/problem2b/ps4_q2b.R /home/husun/STATS506/HW4/problem2b/ps4_q2b.Rout
