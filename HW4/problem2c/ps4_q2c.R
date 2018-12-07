@@ -7,7 +7,7 @@
 
 source("ps4_q2_funcs.R")
 library(parallel)
-library(futures)
+library(future)
 library(mnormt)
 
 
