@@ -14,7 +14,7 @@
 
 #PBS -m abe
 
-#PBS -t 1-4
+#PBS -t 1-2,4
 
 #PBS -M husun@umich.edu
 
@@ -26,8 +26,5 @@
 
 ##code to be run
 
-if [${PBS_ARRAYID}!=3]; then
-    R CMD BATCH --vanilla /home/husun/STATS506/HW4/problem2c/ps4_q2c.R --args sigma=$(echo "scale=2; ${PBS_ARRAYID}/4" | bc) mc_rep=10000 n_cores=32L\
-       >> /home/husun/STATS506/HW4/problem2c/ps4_q2c-${PBS_ARRAYID}.Rout
-fi
-
+Rscript /home/husun/STATS506/HW4/problem2c/ps4_q2c.R --args sigma=$(echo "scale=2; ${PBS_ARRAYID}/4" | bc) mc_rep=10000 n_cores=4\
+   >> /home/husun/STATS506/HW4/problem2c/ps4_q2c-${PBS_ARRAYID}.Rout  
