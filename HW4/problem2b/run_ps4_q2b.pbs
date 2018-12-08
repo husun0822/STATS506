@@ -25,4 +25,3 @@
 
 ##code to be run
 R CMD BATCH --vanilla /home/husun/STATS506/HW4/problem2b/ps4_q2b.R /home/husun/STATS506/HW4/problem2b/ps4_q2b.Rout
-

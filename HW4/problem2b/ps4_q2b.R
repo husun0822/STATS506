@@ -5,11 +5,15 @@
 ## for doing p-value adjustment. Both point estimation and standard
 ## errors are calculated for the four amounts of our interest.
 
+setwd("~/STATS506/HW4/problem2b")
 source("ps4_q2_funcs.R")
 library(doParallel)
 library(foreach)
 library(iterators)
 library(mnormt)
+library(data.table)
+library(dplyr)
+
 
 # Basic parameters to be used:
 n = 1000 # Number of Observations per Monte Carlo simulation
@@ -22,6 +26,11 @@ core = 32L
 rho = list(-0.75,-0.5,-0.25,0,0.25,0.5,0.75)
 sigma = list(0.25,0.5,1)
 multi_method = list("bonferroni","holm","BH","BY")
+
+# For debugging and testing purposes, we use a simpler parameter list:
+#rho = list(0)
+#sigma = list(1)
+#multi_method = list("bonferroni")
 
 # the function doing Monte Carlo simulation with only rho, mc_rep and sigma being the input
 simulation = function(rho,sigma,mc_rep){
@@ -62,15 +71,15 @@ clusterEvalQ(cl, .libPaths('/home/husun/R/x86_64-pc-linux-gnu-library/3.3'))
 
 cat('Starting running ...\n')
 
-results_q4b = foreach(i=rho,.combine = 'rbind') %:%
-  foreach(j=sigma,.combine='rbind') %:%
-  foreach(k=multi_method,.combine='rbind') %dopar%{
+results_q4b = foreach(i=rho,.combine = 'rbind',.packages=c("data.table","dplyr")) %:%
+  foreach(j=sigma,.combine='rbind',.packages=c("data.table","dplyr")) %:%
+  foreach(k=multi_method,.combine='rbind',.packages=c("data.table","dplyr")) %dopar%{
     p_val = simulation(rho = i,sigma = j,mc_rep = mc_rep)
     M = estimation(method=k,mat=p_val,beta=beta)
     M = t(M)
-    M = as.data.frame(M)%>%
-      setDT(keep.rownames = TRUE)%>%
-      cbind(rep(i,4),rep(j,4),rep(k,4))
+    M = as.data.frame(M)%>% 
+        setDT(keep.rownames = TRUE)%>%
+        cbind(rep(i,4),rep(j,4),rep(k,4))
     M
   }
 
@@ -80,7 +89,7 @@ stopCluster(cl)
 names(results_q4b) = c("metric","est","se","rho","sigma","method")
 results_q4b = results_q4b[,.(rho,sigma,metric,method,est,se)]
 
-save(results_q4b,file = "results_q4b.RData")
+save(results_q4b,file = "./results_q4b.RData")
 
 
 
